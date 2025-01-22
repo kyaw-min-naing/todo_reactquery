@@ -53,3 +53,16 @@ export const addTodo = async (todo: Pick<Todo, "title">): Promise<Todo> => {
 
   return newTodo;
 };
+
+export const removeTodo = async (id: number): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const index = todos.findIndex((todo) => todo.id !== id);
+
+  if (index !== -1) {
+    todos.splice(index, 1);
+    console.log(`Todo with id ${id} removed`);
+  } else {
+    console.log(`Todo with id ${id} nor found`);
+  }
+};

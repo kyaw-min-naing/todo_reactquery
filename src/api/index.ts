@@ -57,7 +57,7 @@ export const addTodo = async (todo: Pick<Todo, "title">): Promise<Todo> => {
 export const removeTodo = async (id: number): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  const index = todos.findIndex((todo) => todo.id !== id);
+  const index = todos.findIndex((todo) => todo.id === id);
 
   if (index !== -1) {
     todos.splice(index, 1);

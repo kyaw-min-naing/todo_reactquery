@@ -3,11 +3,14 @@ import { Spin } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addTodo, fetchTodos, removeTodo } from "../api";
 import TodoCard from "../components/TodoCart";
+import "../App.css";
 
 export default function Demo() {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [removingId, setRemovingId] = useState<number | null>(null);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
+
   const { data: todos = [], isLoading: isFetching } = useQuery({
     queryFn: () => fetchTodos(),
     queryKey: ["todos"],
@@ -15,8 +18,15 @@ export default function Demo() {
 
   const { mutate: addTodoMutation } = useMutation({
     mutationFn: addTodo,
+    onMutate: () => {
+      setIsAdding(true);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+      setIsAdding(false);
+    },
+    onError: () => {
+      setIsAdding(false);
     },
   });
 
@@ -35,7 +45,7 @@ export default function Demo() {
   });
 
   return (
-    <div>
+    <div className="demo-container">
       <div>
         <input
           type="text"
@@ -44,11 +54,9 @@ export default function Demo() {
         />
         <button
           onClick={() => {
-            try {
+            if (title.trim()) {
               addTodoMutation({ title });
               setTitle("");
-            } catch (e) {
-              console.log(e);
             }
           }}
         >
@@ -67,6 +75,7 @@ export default function Demo() {
           />
         ))
       )}
+      {isAdding && <div>Adding...</div>}
     </div>
   );
 }

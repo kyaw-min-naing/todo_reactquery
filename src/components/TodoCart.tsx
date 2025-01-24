@@ -2,13 +2,15 @@ import { useState } from "react";
 import { Todo } from "../entities/Todo";
 import { Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 
 interface TodoProps {
   todo: Todo;
-  removeTodoMutation: (id: number) => void;
+  onRemove: () => void;
+  isRemoving: boolean;
 }
 
-export default function TodoCard({ todo, removeTodoMutation }: TodoProps) {
+export default function TodoCard({ todo, onRemove, isRemoving }: TodoProps) {
   const [checked, setChecked] = useState(todo.completed);
 
   return (
@@ -24,8 +26,11 @@ export default function TodoCard({ todo, removeTodoMutation }: TodoProps) {
         danger
         icon={<DeleteOutlined />}
         size="small"
-        onClick={() => removeTodoMutation(todo.id)}
-      ></Button>
+        onClick={onRemove}
+        disabled={isRemoving}
+      >
+        {isRemoving ? <Spin size="small" /> : "Remove"}
+      </Button>
     </div>
   );
 }
